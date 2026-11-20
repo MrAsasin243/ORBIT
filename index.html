@@ -448,6 +448,18 @@ textarea{line-height:1.6}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+
+/* Orbit LAN server integration */
+#serverStorageCard{grid-column:1/-1}
+#serverStorageDot{background:#888;flex:0 0 7px}
+#serverStorageCard.server-online #serverStorageDot{background:#ddd}
+#serverStorageCard.server-warning #serverStorageDot{background:#aaa}
+#serverStorageCard .storage-info{align-items:flex-start}
+#serverStorageStatus{line-height:1.45}
+#serverStorageCard .settings-actions{align-items:center}
+#serverLoginDialog{width:min(480px,calc(100vw - 24px))}
+#serverLoginDialog .dialog-body{padding:18px}
+@media(max-width:760px){#serverStorageCard{grid-column:auto}#serverStorageCard .settings-actions .btn{flex:1 1 100%;min-height:44px}#serverLoginDialog .dialog-actions{flex-direction:column-reverse}#serverLoginDialog .dialog-actions .btn{width:100%;min-height:44px}}
 </style>
 </head>
 <body>
@@ -635,11 +647,11 @@ textarea{line-height:1.6}
       </section>
       <!-- SETTINGS -->
       <section class="view" id="view-settings">
-        <div class="page-heading"><div><div class="eyebrow">УПРАВЛЕНИЕ ДАННЫМИ</div><h1>Настройки и данные</h1><p>Приложение работает без сервера. Экспортируй резервную копию регулярно.</p></div></div>
-        <div class="grid settings-grid"><div class="card settings-card"><h2>Размер текста и формул</h2><p>Настрой масштаб всего интерфейса и отдельно размер математических формул в экзаменационных карточках. Выбранные параметры сохраняются в этом браузере.</p><div class="form-grid"><div class="form-field"><label for="uiScaleSelect">Масштаб интерфейса</label><select id="uiScaleSelect" class="field"><option value="1">100% — компактный</option><option value="1.1" selected>110% — увеличенный</option><option value="1.2">120% — крупный</option><option value="1.3">130% — очень крупный</option></select></div><div class="form-field"><label for="examMathScaleSelect">Размер LaTeX-формул</label><select id="examMathScaleSelect" class="field"><option value="1.15em">115% — умеренный</option><option value="1.25em" selected>125% — крупный</option><option value="1.4em">140% — очень крупный</option><option value="1.55em">155% — максимальный</option></select></div></div><div class="footnote">Изменение масштаба не затрагивает данные задач и карточек. Для формул в экзаменационном режиме достаточно изменить второй параметр.</div></div><div class="card settings-card"><h2>Резервное копирование</h2><p>Полный архив JSON содержит задачи, цели, проекты, время, учебные темы, колоды экзаменов с карточками, расписание повторений, привычки, тренировки с упражнениями и подходами, обзоры и игровой прогресс.</p><div class="settings-actions"><button class="btn btn-primary" id="exportBtn">↓ Полный JSON</button><button class="btn" id="importBtn">↑ Импортировать JSON</button><button class="btn" id="snapshotBtn">＋ Точка восстановления</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div><div class="storage-info"><span class="storage-dot"></span><span id="storageStatus">Автосохранение включено в этом браузере</span></div><div class="footnote">Импорт заменяет текущие данные. Перед импортом автоматически создаётся точка восстановления.</div><div class="backup-history-head"><b>Локальные точки восстановления</b><span class="muted-small">Хранятся в этом браузере</span></div><div class="backup-history" id="backupHistory"></div></div>
+        <div class="page-heading"><div><div class="eyebrow">УПРАВЛЕНИЕ ДАННЫМИ</div><h1>Настройки и данные</h1><p>Orbit может хранить данные в этом браузере или в общей базе на компьютере-сервере в локальной сети.</p></div></div>
+        <div class="grid settings-grid"><div class="card settings-card" id="serverStorageCard"><h2>Сервер локальной сети</h2><p id="serverStorageDescription">Если Orbit открыт через запущенный Orbit Server, здесь появится статус общей базы данных. На компьютере-сервере запускается отдельный Python-сервер, а телефоны и другие компьютеры открывают этот же адрес.</p><div class="storage-info"><span class="storage-dot" id="serverStorageDot"></span><span id="serverStorageStatus">Проверка подключения к серверу…</span></div><div class="settings-actions" style="margin-top:13px"><button class="btn btn-primary" id="serverConnectBtn">Подключиться к серверу</button><button class="btn" id="serverReloadBtn" hidden>Загрузить актуальные данные</button><button class="btn" id="serverExportBtn" hidden>Экспорт JSON</button><button class="btn" id="serverSnapshotBtn" hidden>Серверная копия</button><button class="btn" id="serverLogoutBtn" hidden>Локальный режим</button></div><div class="footnote" id="serverStorageHelp">Для работы нужен компьютер в той же Wi-Fi / проводной сети. Серверный адрес и пароль отображаются в окне запуска. Данные сохраняются в SQLite на компьютере-сервере.</div></div><div class="card settings-card"><h2>Размер текста и формул</h2><p>Настрой масштаб всего интерфейса и отдельно размер математических формул в экзаменационных карточках. Выбранные параметры сохраняются в этом браузере.</p><div class="form-grid"><div class="form-field"><label for="uiScaleSelect">Масштаб интерфейса</label><select id="uiScaleSelect" class="field"><option value="1">100% — компактный</option><option value="1.1" selected>110% — увеличенный</option><option value="1.2">120% — крупный</option><option value="1.3">130% — очень крупный</option></select></div><div class="form-field"><label for="examMathScaleSelect">Размер LaTeX-формул</label><select id="examMathScaleSelect" class="field"><option value="1.15em">115% — умеренный</option><option value="1.25em" selected>125% — крупный</option><option value="1.4em">140% — очень крупный</option><option value="1.55em">155% — максимальный</option></select></div></div><div class="footnote">Изменение масштаба не затрагивает данные задач и карточек. Для формул в экзаменационном режиме достаточно изменить второй параметр.</div></div><div class="card settings-card"><h2>Резервное копирование</h2><p>Полный архив JSON содержит задачи, цели, проекты, время, учебные темы, колоды экзаменов с карточками, расписание повторений, привычки, тренировки с упражнениями и подходами, обзоры и игровой прогресс.</p><div class="settings-actions"><button class="btn btn-primary" id="exportBtn">↓ Полный JSON</button><button class="btn" id="importBtn">↑ Импортировать JSON</button><button class="btn" id="snapshotBtn">＋ Точка восстановления</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div><div class="storage-info"><span class="storage-dot"></span><span id="storageStatus">Автосохранение включено в этом браузере</span></div><div class="footnote">Импорт заменяет текущие данные. Перед импортом автоматически создаётся точка восстановления.</div><div class="backup-history-head"><b>Локальные точки восстановления</b><span class="muted-small">Хранятся в этом браузере</span></div><div class="backup-history" id="backupHistory"></div></div>
           <div class="card settings-card"><h2>Экспорт таблиц CSV</h2><p>Выгрузи отдельные наборы данных для Excel, LibreOffice или дальнейшего анализа.</p><div class="settings-actions"><button class="btn btn-small" data-csv="tasks">Задачи CSV</button><button class="btn btn-small" data-csv="time">Время CSV</button><button class="btn btn-small" data-csv="goals">Цели CSV</button><button class="btn btn-small" data-csv="study">Обучение CSV</button><button class="btn btn-small" data-csv="habits">Привычки CSV</button><button class="btn btn-small" data-csv="exams">Карточки экзаменов CSV</button><button class="btn btn-small" data-csv="fitness">Тренировки CSV</button></div><div class="footnote">Файлы используют UTF-8 с BOM и разделитель «;» для корректного открытия в русской локали Excel.</div></div>
           <div class="card settings-card"><h2>Установка и офлайн-режим</h2><p>Orbit можно установить как приложение. Библиотека MathJax и её шрифты входят в комплект сайта и сохраняются офлайн-кешем при установке PWA. Формулы работают без CDN и без интернета после первого успешного открытия приложения. Для импорта новых APKG-пакетов отдельные библиотеки импорта могут загружаться из сети.</p><div class="settings-actions"><button class="btn" id="installAppBtn" disabled>Установить приложение</button><span class="muted-small" id="pwaStatus">Проверка поддержки установки…</span></div><div class="footnote">Для полного офлайн-режима загрузи все файлы комплекта, включая папку vendor/mathjax, sw.js, manifest.webmanifest и иконки.</div></div>
-          <div class="card settings-card"><h2>Как работает хранение</h2><p>Информация хранится в localStorage браузера на этом устройстве и не отправляется на сервер. Очистка данных сайта или браузера может удалить записи.</p><div class="pill doing">LOCAL-FIRST</div><div class="footnote">Файл HTML можно разместить на GitHub Pages. Для переноса данных между компьютерами используй экспорт и импорт JSON. Сам HTML-файл не содержит твою личную статистику.</div></div>
+          <div class="card settings-card"><h2>Как работает хранение</h2><p>В локальном режиме данные сохраняются в браузере. При открытии Orbit с адреса Orbit Server данные загружаются из общей базы SQLite и отправляются на сервер после изменений.</p><div class="pill doing" id="storageModePill">LOCAL</div><div class="footnote">На серверном сайте все подключённые устройства работают с одним набором данных. Через полный JSON можно перенести серверную копию в локальный Orbit или обратно.</div></div>
           <div class="card settings-card danger-zone"><h2>Сброс данных</h2><p>Удаляет задачи, цели, записи времени, тренировки и игровой прогресс из локального хранилища. Это действие нельзя отменить без JSON-резервной копии.</p><button class="btn btn-danger" id="resetBtn">Сбросить все данные</button></div>
           <div class="card settings-card"><h2>Правила начисления опыта</h2><p>Опыт начисляется один раз при первом переводе задачи в статус «Выполнено». Повторное открытие и закрытие задачи не начисляет XP повторно.</p><div class="legend"><div class="legend-item"><span class="legend-label"><span class="legend-dot" style="--dot:var(--red)"></span>Высокий приоритет</span><b>30 XP</b></div><div class="legend-item"><span class="legend-label"><span class="legend-dot" style="--dot:var(--yellow)"></span>Средний приоритет</span><b>20 XP</b></div><div class="legend-item"><span class="legend-label"><span class="legend-dot" style="--dot:var(--green)"></span>Низкий приоритет</span><b>10 XP</b></div></div><div class="footnote">Уровень повышается каждые 100 XP. Время не конвертируется в XP, чтобы игровой прогресс нельзя было накручивать длинными или случайными таймер-сессиями.</div></div>
         </div>
@@ -689,9 +701,10 @@ textarea{line-height:1.6}
     <div class="dialog-actions"><button class="btn" type="button" data-close="fitnessDialog">Отмена</button><button class="btn btn-primary" type="submit">Сохранить тренировку</button></div>
   </form>
 </dialog>
+<dialog id="serverLoginDialog" aria-labelledby="serverLoginTitle"><div class="dialog-head"><h2 id="serverLoginTitle">Вход в Orbit Server</h2></div><form id="serverLoginForm" class="dialog-body"><p style="margin:0 0 14px;color:var(--muted);font-size:13px">Введи пароль, который показал компьютер при первом запуске сервера. Данные этого браузера пока не будут отправлены на сервер.</p><div class="form-field"><label for="serverPasswordInput">Пароль сервера</label><input id="serverPasswordInput" type="password" autocomplete="current-password" required minlength="1" class="field"></div><div class="form-help" id="serverLoginError" style="margin-top:8px;min-height:18px"></div><div class="dialog-actions"><button class="btn" type="button" id="serverUseLocalBtn">Остаться локально</button><button class="btn btn-primary" type="submit" id="serverLoginSubmit">Войти и загрузить данные</button></div></form></dialog>
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 <script>
-(() => {
+(async () => {
 'use strict';
 const STORAGE_KEY = 'orbit.productivity.data.v1';
 const CATEGORIES = ['Учёба','Разработка','Чтение','Спорт','Работа','Личное','Другое'];
@@ -771,6 +784,9 @@ function normalizeState(raw){
 }
 function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);return raw?normalizeState(JSON.parse(raw)):defaultState();}catch(e){console.warn(e);return defaultState();}}
 let state=loadState();
+const SERVER_TOKEN_KEY='orbit.server.session.v1';
+const SERVER_SKIP_KEY='orbit.server.skip.v1';
+const serverSync={available:false,active:false,token:'',revision:0,dirty:false,inFlight:false,conflict:false,applying:false,saveTimer:null,pollTimer:null,lastError:'',loginResolver:null};
 let timerInterval=null;
 let activeView='dashboard';
 const BACKUP_KEY='orbit.productivity.backups.v1';
@@ -779,7 +795,130 @@ function readBackupHistory(){try{const raw=JSON.parse(localStorage.getItem(BACKU
 function writeBackupHistory(items){try{localStorage.setItem(BACKUP_KEY,JSON.stringify(items.slice(0,MAX_LOCAL_BACKUPS)));return true;}catch(e){console.warn('Backup history storage failed',e);return false;}}
 function storeBackupSnapshot(label='Автоматическая копия',snapshotState=state){const items=readBackupHistory();const snapshot={id:uid(),label,createdAt:nowISO(),state:JSON.parse(JSON.stringify(snapshotState))};items.unshift(snapshot);writeBackupHistory(items);return snapshot;}
 function maybeAutoSnapshot(){const items=readBackupHistory();const last=items[0]?.createdAt?new Date(items[0].createdAt).getTime():0;if(!last||Date.now()-last>12*60*60*1000)storeBackupSnapshot('Автоматическая копия');}
-function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));maybeAutoSnapshot();$('storageStatus').textContent='Автосохранение включено в этом браузере';}catch(e){$('storageStatus').textContent='Не удалось сохранить данные: хранилище браузера недоступно';toast('Не удалось сохранить данные в браузере. Сделай экспорт JSON.','error');}}
+function persistLocalState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));return true;}catch(e){console.warn(e);return false;}}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));maybeAutoSnapshot();if(serverSync.active&&!serverSync.applying){serverSync.dirty=true;if(serverSync.conflict){updateServerUI('Есть конфликт изменений. Сначала загрузи актуальную версию сервера или сохрани локальную копию JSON.','warning');}else{updateServerUI('Изменения сохранены на устройстве и ожидают отправки на сервер…','online');scheduleServerSave();}}else if(!serverSync.active){$('storageStatus').textContent='Автосохранение включено в этом браузере';}}catch(e){$('storageStatus').textContent='Не удалось сохранить данные: хранилище браузера недоступно';toast('Не удалось сохранить данные в браузере. Сделай экспорт JSON.','error');}}
+const serverApiUrl=(path)=>new URL(path,location.origin).toString();
+function updateServerUI(message='',mode='local'){
+  const card=$('serverStorageCard'),status=$('serverStorageStatus'),pill=$('storageModePill');
+  if(!card||!status)return;
+  card.classList.toggle('server-online',mode==='online');card.classList.toggle('server-warning',mode==='warning');
+  if(message)status.textContent=message;
+  if(pill){pill.textContent=serverSync.active?'SERVER':'LOCAL';pill.className=`pill ${serverSync.active?'doing':''}`;}
+  $('serverConnectBtn').hidden=serverSync.active;
+  ['serverReloadBtn','serverExportBtn','serverSnapshotBtn','serverLogoutBtn'].forEach(id=>$(id).hidden=!serverSync.active);
+  if(serverSync.active){$('serverStorageDescription').textContent=`Общее хранилище активно. Версия данных на сервере: ${serverSync.revision}. Изменения синхронизируются автоматически.`;}
+  else if(serverSync.available){$('serverStorageDescription').textContent='Orbit Server обнаружен по этому адресу, но сейчас приложение использует локальную копию. Можно подключиться к общей базе.';}
+  else{$('serverStorageDescription').textContent='Сервер не обнаружен на текущем адресе. В локальном режиме данные хранятся отдельно в этом браузере.';}
+  const localNote=document.querySelector('.local-note');
+  if(localNote){const strong=localNote.querySelector('strong');if(strong)strong.textContent=serverSync.active?'Общее серверное хранение':'Локальное хранение';const text=localNote.childNodes[localNote.childNodes.length-1];if(text&&text.nodeType===Node.TEXT_NODE)text.textContent=serverSync.active?'Данные синхронизируются с Orbit Server.':'Данные остаются в этом браузере. Делайте JSON-резервные копии.';}
+  if($('storageStatus'))$('storageStatus').textContent=serverSync.active?'Общая база SQLite · автосохранение на сервере':'Автосохранение включено в этом браузере';
+}
+async function serverFetch(path,options={}){
+  const headers={...(options.headers||{})};
+  if(serverSync.token)headers.Authorization=`Bearer ${serverSync.token}`;
+  if(options.body&&!headers['Content-Type'])headers['Content-Type']='application/json';
+  const response=await fetch(serverApiUrl(path),{...options,headers,cache:'no-store'});
+  let data={};try{data=await response.json();}catch(_){data={};}
+  if(!response.ok){const error=new Error(data.error||`Ошибка сервера (${response.status}).`);error.status=response.status;error.payload=data;throw error;}
+  return data;
+}
+function requestServerLogin(){
+  return new Promise(resolve=>{
+    serverSync.loginResolver=resolve;$('serverLoginError').textContent='';$('serverPasswordInput').value='';
+    if(!$('serverLoginDialog').open)$('serverLoginDialog').showModal();
+    setTimeout(()=>$('serverPasswordInput').focus(),50);
+  });
+}
+function resolveServerLogin(value){const resolver=serverSync.loginResolver;serverSync.loginResolver=null;if($('serverLoginDialog').open)$('serverLoginDialog').close();if(resolver)resolver(value);}
+async function loginToServer(){
+  const password=$('serverPasswordInput').value;
+  $('serverLoginSubmit').disabled=true;$('serverLoginError').textContent='Проверяю пароль…';
+  try{const response=await fetch(serverApiUrl('/api/login'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password}),cache:'no-store'});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'Не удалось войти.');serverSync.token=data.token;sessionStorage.setItem(SERVER_TOKEN_KEY,data.token);resolveServerLogin(data.token);}
+  catch(error){$('serverLoginError').textContent=error.message;}
+  finally{$('serverLoginSubmit').disabled=false;}
+}
+function hasMeaningfulLocalData(s){return !!(s&&(s.tasks?.length||s.goals?.length||s.timeEntries?.length||s.projects?.length||s.studySubjects?.length||s.habits?.length||s.reviews?.length||s.examDecks?.length||s.fitnessSessions?.length||Number(s.profile?.xp)>0));}
+async function fetchServerState(){return await serverFetch('/api/state',{method:'GET'});}
+async function uploadCurrentState(baseRevision=serverSync.revision){return await serverFetch('/api/state',{method:'PUT',body:JSON.stringify({state,baseRevision})});}
+async function initializeServerBackend(force=false){
+  if(serverSync.active)return true;
+  if(!force&&sessionStorage.getItem(SERVER_SKIP_KEY)==='1'){updateServerUI('Локальный режим выбран вручную.','local');return false;}
+  try{
+    const healthResponse=await fetch(serverApiUrl('/api/health'),{cache:'no-store'});
+    const health=healthResponse.ok?await healthResponse.json().catch(()=>({})):{};
+    if(health.app!=='Orbit Server'){serverSync.available=false;updateServerUI('На этом адресе сервер Orbit не обнаружен.','local');return false;}
+    serverSync.available=true;
+  }catch(_){serverSync.available=false;updateServerUI('Сервер не обнаружен. Данные сохраняются локально в браузере.','local');return false;}
+  let token=sessionStorage.getItem(SERVER_TOKEN_KEY)||'';serverSync.token=token;
+  if(token){try{await fetchServerState();}catch(error){if(error.status===401){sessionStorage.removeItem(SERVER_TOKEN_KEY);serverSync.token='';token='';}else{updateServerUI('Orbit Server обнаружен, но сейчас недоступен.','warning');return false;}}}
+  if(!token){token=await requestServerLogin();if(!token){updateServerUI('Вход отменён. Продолжается локальная работа.','local');return false;}}
+  try{
+    const remote=await fetchServerState();
+    serverSync.active=true;serverSync.revision=remote.revision||0;serverSync.dirty=false;serverSync.conflict=false;
+    if(remote.isNew){
+      if(hasMeaningfulLocalData(state)){
+        const localCopy=JSON.parse(JSON.stringify(state));storeBackupSnapshot('Перед переносом данных на сервер');
+        if(confirm('В серверной базе пока нет данных. В этом браузере найдена существующая база Orbit. Перенести её на сервер, чтобы она стала общей для всех устройств?')){
+          const result=await uploadCurrentState(0);serverSync.revision=result.revision;state=normalizeState(localCopy);persistLocalState();
+        }else{state=normalizeState(remote.state);persistLocalState();}
+      }else{state=normalizeState(remote.state);persistLocalState();}
+    }else{
+      if(hasMeaningfulLocalData(state))storeBackupSnapshot('Локальная копия перед загрузкой сервера');
+      state=normalizeState(remote.state);persistLocalState();
+    }
+    updateServerUI(`Подключено · версия ${serverSync.revision}. Данные загружены из общей базы SQLite.`,'online');
+    syncTimerInterval();
+    if(serverSync.pollTimer)clearInterval(serverSync.pollTimer);
+    serverSync.pollTimer=setInterval(pollServerState,7000);
+    return true;
+  }catch(error){
+    if(error.status===401){sessionStorage.removeItem(SERVER_TOKEN_KEY);serverSync.token='';}
+    serverSync.active=false;updateServerUI(`Не удалось загрузить серверные данные: ${error.message}`,'warning');toast(error.message,'error');return false;
+  }
+}
+function scheduleServerSave(){if(!serverSync.active||serverSync.conflict)return;if(serverSync.saveTimer)clearTimeout(serverSync.saveTimer);serverSync.saveTimer=setTimeout(flushServerSave,450);}
+async function flushServerSave(){
+  if(!serverSync.active||!serverSync.dirty||serverSync.inFlight||serverSync.conflict)return;
+  serverSync.inFlight=true;const snapshot=JSON.stringify(state);const baseRevision=serverSync.revision;serverSync.dirty=false;
+  try{
+    const result=await serverFetch('/api/state',{method:'PUT',body:JSON.stringify({state:JSON.parse(snapshot),baseRevision})});
+    serverSync.revision=result.revision;serverSync.lastError='';
+    updateServerUI(`Синхронизировано · версия ${serverSync.revision} · ${new Date(result.updatedAt).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`,'online');
+  }catch(error){
+    serverSync.dirty=true;
+    if(error.status===409){serverSync.conflict=true;updateServerUI('Обнаружены параллельные изменения с другого устройства. Сначала сохрани локальную копию JSON или загрузи актуальные данные сервера.','warning');toast('Конфликт синхронизации: сервер изменился на другом устройстве.','error');}
+    else{serverSync.lastError=error.message;updateServerUI(`Нет связи с сервером. Изменения пока сохранены в этом браузере: ${error.message}`,'warning');}
+  }finally{serverSync.inFlight=false;if(serverSync.dirty&&!serverSync.conflict){if(serverSync.lastError)setTimeout(scheduleServerSave,5000);else scheduleServerSave();}}
+}
+async function pollServerState(){
+  if(!serverSync.active||document.hidden)return;
+  try{
+    const remote=await fetchServerState();
+    if(remote.revision>serverSync.revision){
+      if(serverSync.dirty||serverSync.inFlight){serverSync.conflict=true;updateServerUI('Сервер изменён с другого устройства, пока здесь есть несохранённые изменения. Сохрани локальный JSON или загрузи версию сервера.','warning');return;}
+      storeBackupSnapshot('Перед обновлением из общей базы');state=normalizeState(remote.state);serverSync.revision=remote.revision;persistLocalState();renderAll();syncTimerInterval();updateServerUI(`Получены изменения с другого устройства · версия ${serverSync.revision}.`,'online');
+    }
+  }catch(error){if(error.status===401){serverSync.active=false;sessionStorage.removeItem(SERVER_TOKEN_KEY);serverSync.token='';if(serverSync.pollTimer)clearInterval(serverSync.pollTimer);updateServerUI('Сессия сервера истекла. Нажми «Подключиться к серверу» и войди повторно.','warning');}else updateServerUI('Временно нет связи с сервером. Локальная копия сохранена.','warning');}
+}
+async function reloadFromServer(){
+  if(!serverSync.active)return;
+  if((serverSync.dirty||serverSync.conflict)&&!confirm('Текущая локальная версия отличается от сервера. Перед заменой будет создана локальная точка восстановления. Продолжить и загрузить серверную версию?'))return;
+  try{const remote=await fetchServerState();storeBackupSnapshot('Перед принудительной загрузкой сервера');state=normalizeState(remote.state);serverSync.revision=remote.revision;serverSync.dirty=false;serverSync.conflict=false;serverSync.lastError='';persistLocalState();renderAll();syncTimerInterval();updateServerUI(`Загружена актуальная версия сервера · ${serverSync.revision}.`,'online');toast('Данные обновлены с сервера.');}
+  catch(error){toast(`Не удалось загрузить данные: ${error.message}`,'error');}
+}
+async function exportServerJSON(){
+  try{
+    if(serverSync.dirty&&!serverSync.conflict)await flushServerSave();
+    const response=await fetch(serverApiUrl('/api/export'),{headers:{Authorization:`Bearer ${serverSync.token}`},cache:'no-store'});
+    if(!response.ok){let message=`Ошибка экспорта (${response.status}).`;try{message=(await response.json()).error||message;}catch(_){}throw new Error(message);}
+    const blob=await response.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;
+    const disposition=response.headers.get('Content-Disposition')||'';const match=disposition.match(/filename="?([^";]+)"?/i);a.download=match?match[1]:`orbit-server-backup-${localDate()}.json`;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);toast('Экспортирована последняя сохранённая версия сервера.');
+  }catch(error){toast(`Не удалось экспортировать серверные данные: ${error.message}`,'error');}
+}
+async function createServerSnapshot(){try{if(serverSync.dirty&&!serverSync.conflict)await flushServerSave();await serverFetch('/api/snapshot',{method:'POST',body:JSON.stringify({reason:'Ручная серверная копия'})});toast('Серверная точка восстановления создана.');}catch(error){toast(`Не удалось создать копию: ${error.message}`,'error');}}
+function switchToLocalMode(){if(!confirm('Перейти в локальный режим на этом устройстве? Серверная база не будет изменена. Локальная копия останется в этом браузере.'))return;serverSync.active=false;serverSync.token='';serverSync.dirty=false;serverSync.conflict=false;if(serverSync.pollTimer)clearInterval(serverSync.pollTimer);if(serverSync.saveTimer)clearTimeout(serverSync.saveTimer);sessionStorage.removeItem(SERVER_TOKEN_KEY);sessionStorage.setItem(SERVER_SKIP_KEY,'1');updateServerUI('Работа продолжается с локальной копией браузера. Серверные данные не затронуты.','local');toast('Включён локальный режим.');}
+
 function toast(message,type='success'){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=message;$('toastWrap').appendChild(el);setTimeout(()=>el.remove(),3300);}
 function fmtDuration(minutes){minutes=Math.max(0,Math.round(minutes));const h=Math.floor(minutes/60),m=minutes%60;return h?`${h}ч ${m}м`:`${m}м`;}
 function fmtClock(ms){const sec=Math.max(0,Math.floor(ms/1000));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return [h,m,s].map(x=>String(x).padStart(2,'0')).join(':');}
@@ -1331,10 +1470,19 @@ document.body.addEventListener('click',e=>{if(e.target.closest('#examRestartAllB
 applyDisplayPreferences();
 $('uiScaleSelect').addEventListener('change',e=>setDisplayPreference(UI_SCALE_KEY,e.target.value));
 $('examMathScaleSelect').addEventListener('change',e=>setDisplayPreference(EXAM_MATH_SCALE_KEY,e.target.value));
+$('serverLoginForm').addEventListener('submit',e=>{e.preventDefault();loginToServer();});
+$('serverUseLocalBtn').addEventListener('click',()=>{sessionStorage.setItem(SERVER_SKIP_KEY,'1');resolveServerLogin(null);});
+$('serverLoginDialog').addEventListener('cancel',e=>{e.preventDefault();sessionStorage.setItem(SERVER_SKIP_KEY,'1');resolveServerLogin(null);});
+$('serverConnectBtn').addEventListener('click',async()=>{sessionStorage.removeItem(SERVER_SKIP_KEY);await initializeServerBackend(true);if(serverSync.active){renderAll();syncTimerInterval();}});
+$('serverReloadBtn').addEventListener('click',reloadFromServer);
+$('serverExportBtn').addEventListener('click',exportServerJSON);
+$('serverSnapshotBtn').addEventListener('click',createServerSnapshot);
+$('serverLogoutBtn').addEventListener('click',switchToLocalMode);
 
 // Date labels and initial paint
 $('todayLabel').textContent=new Intl.DateTimeFormat('ru-RU',{weekday:'short',day:'numeric',month:'long'}).format(new Date());
 if(state.timer){timerInterval=setInterval(updateTimerDisplay,1000);}
+await initializeServerBackend(false);
 renderAll();
 })();
 </script>
